@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Coach {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  name      String
+  username  String   @unique
+  password  String
+  teamId    String   @unique
+
+  team Team @relation(fields: [teamId], references: [id])
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  name      String
+  age       Int
+  teamId    String
+
+  team Team @relation(fields: [teamId], references: [id])
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  name      String   @unique
+  players   Player[]
+  coach     Coach?
+
+  homeMatches Match[] @relation("homeTeam")
+  awayMatches Match[] @relation("awayTeam")
+}
+
+model Match {
+  id         String      @id @default(uuid())
+  createdAt  DateTime    @default(now())
+  homeTeamId String
+  awayTeamId String
+  result     MatchResult
+
+  homeTeam Team @relation(fields: [homeTeamId], references: [id], name: "homeTeam")
+  awayTeam Team @relation(fields: [awayTeamId], references: [id], name: "awayTeam")
+}
+
+enum MatchResult {
+  homeWin
+  awayWin
+  draw
+}
