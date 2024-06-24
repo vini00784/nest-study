@@ -28,6 +28,8 @@ model Player {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   name      String
+  username  String   @unique
+  password  String
   age       Int
   teamId    String
 
