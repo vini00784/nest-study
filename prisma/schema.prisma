@@ -37,11 +37,14 @@ model Player {
 }
 
 model Team {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  name      String   @unique
-  players   Player[]
-  coach     Coach?
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  name       String   @unique
+  winsCount  Int      @default(0)
+  drawsCount Int      @default(0)
+  losesCount Int      @default(0)
+  players    Player[]
+  coach      Coach?
 
   homeMatches Match[] @relation("homeTeam")
   awayMatches Match[] @relation("awayTeam")
